@@ -5,12 +5,14 @@ import { MdOutlineRectangle } from "react-icons/md";
 import { MdBrush } from "react-icons/md";
 import { useSessionHook } from "../Hooks/useSessionHook";
 import { ImUndo } from "react-icons/im";
+import { BsEraser } from "react-icons/bs";
 
 export default function Whiteboard() {
   const{getSessionItem}=useSessionHook("roomname");
   const socket = useRef<WebSocket | null>(null);
   const chooseCircleElement = useRef<HTMLButtonElement | null>(null);
   const chooseRectangleElement = useRef<HTMLButtonElement | null>(null);
+  const eraserElement=useRef<HTMLButtonElement|null>(null)
   const Whiteboardref = useRef<HTMLCanvasElement | null>(null);
   const context = useRef<CanvasRenderingContext2D | null>(null);
   const draw = useRef(false); // for freehand
@@ -19,6 +21,8 @@ export default function Whiteboard() {
   const Eraser=useRef(false);
   const strokeColor = useRef<HTMLInputElement | null>(null);
   const lastPosition = useRef<{ x: number; y: number } | null>(null);
+  const chooseDrawElement = useRef<HTMLButtonElement | null>(null);
+
   const rectangleBounds = useRef<{
     x: number;
     y: number;
@@ -49,7 +53,8 @@ export default function Whiteboard() {
     socket.current.onmessage=(e)=>{
       const data = JSON.parse(e.data);
       if (data.type === "canvasImage") {
-  
+      
+        
         if(data.image){
         const image = new Image();
         image.src = data.image;
@@ -68,10 +73,9 @@ export default function Whiteboard() {
 
   };
 
-  const chooseDrawElement = useRef<HTMLButtonElement | null>(null);
 
   const handleMouseUp = (e: MouseEvent) => {
-    if (
+ if (
       drawRectangle.current &&
       lastPosition.current &&
       rectangleBounds.current &&
@@ -83,10 +87,10 @@ export default function Whiteboard() {
      
       context.current?.beginPath();
       context.current?.rect(
-        rectangleBounds.current?.x,
-        rectangleBounds.current?.y,
-        rectangleBounds.current?.width,
-        rectangleBounds.current?.height
+      rectangleBounds.current?.x,
+      rectangleBounds.current?.y,
+      rectangleBounds.current?.width,
+      rectangleBounds.current?.height
       );
       context.current?.stroke();
     
@@ -116,7 +120,12 @@ export default function Whiteboard() {
    socket.current!.send(JSON.stringify({ type: "canvasImage", image,room:getSessionItem() }));
   };
   const handleMouseMove = (e: MouseEvent) => {
-    if (
+    if(Eraser.current && lastPosition.current && savedCanvasState.current)
+    {
+      context.current?.clearRect(e.offsetX, e.offsetY, 20,20);
+ 
+    }
+    else if (
       drawRectangle.current &&
       lastPosition.current &&
       Whiteboardref.current &&
@@ -188,7 +197,12 @@ export default function Whiteboard() {
       ); 
       context.current?.beginPath();
     }
-    if (drawRectangle.current && lastPosition.current) {
+    if(Eraser.current)
+    {
+      console.log("eraser time");
+      
+    }
+    else if (drawRectangle.current && lastPosition.current) {
       rectangleBounds.current = {
         x: e.offsetX,
         y: e.offsetY,
@@ -256,6 +270,7 @@ export default function Whiteboard() {
             drawCircle.current = false;
             Eraser.current=false;
             chooseRectangleElement.current?.classList.remove("highlight");
+            eraserElement.current?.classList.remove("highlight");
             chooseCircleElement.current?.classList.remove("highlight");
           }}
         >
@@ -271,6 +286,7 @@ export default function Whiteboard() {
             drawRectangle.current = false;
             chooseDrawElement.current?.classList.remove("highlight");
             chooseRectangleElement.current?.classList.remove("highlight");
+            eraserElement.current?.classList.remove("highlight");
             Eraser.current=false;
           }}
         >
@@ -286,19 +302,24 @@ export default function Whiteboard() {
             drawCircle.current = false;
             chooseDrawElement.current?.classList.remove("highlight");
             chooseCircleElement.current?.classList.remove("highlight");
+            eraserElement.current?.classList.remove("highlight");
             Eraser.current=false;
           }}
         >
           <MdOutlineRectangle size={30} title="Rectangle"/>
         </button>
-        <button type="button" onClick={()=>{
-          Eraser.current=true;
+        <button type="button" ref={eraserElement} onClick={()=>{
+          Eraser.current=!Eraser.current;
+          eraserElement.current?.classList.toggle("highlight");
           draw.current = false;
           drawCircle.current = false;
           drawRectangle.current=false
+          chooseDrawElement.current?.classList.remove("highlight");
+          chooseCircleElement.current?.classList.remove("highlight");
+          chooseRectangleElement.current?.classList.remove("highlight");
 
         }}>
-          Eraser
+        <BsEraser title="Eraser" size={30}/>
         </button>
 
         <input

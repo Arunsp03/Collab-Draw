@@ -33,28 +33,10 @@ wss.on('connection', function connection(ws) {
             }
             console.log("total no of people in this room", collabRoomManager[receiveddata.room].length);
         }
-        // else if(receiveddata.type=="Undo")
-        // {
-        //   //console.log("undo time");
-        //   collabRoomManager[receiveddata.room].forEach((client)=>{
-        //     let imagearr=historyManager[receiveddata.room]
-        //   //  console.log("imagearr",imagearr);
-        //     if(imagearr){
-        //     if(imagearr.length>1)
-        //     {
-        //       client.send(JSON.stringify({type:"canvasImage",image:imagearr[imagearr.length-2]}));
-        //       historyManager[receiveddata.room].pop();
-        //     }
-        //     else{
-        //       client.send(JSON.stringify({type:"canvasImage",image:imagearr[imagearr.length-1]}));
-        //       historyManager[receiveddata.room]=[];
-        //     }
-        //   }
-        //   })
-        // }
         else if (receiveddata.type === "Undo") {
             const room = receiveddata.room;
             let imageArr = historyManager[room];
+            console.log("imagearr length", imageArr.length);
             if (imageArr) {
                 if (imageArr.length > 1) {
                     historyManager[room].pop(); // Remove the current image
@@ -69,6 +51,11 @@ wss.on('connection', function connection(ws) {
                         client.send(JSON.stringify({ type: "canvasImage", image: onlyImage }));
                     });
                     historyManager[room] = []; // Clear the history
+                }
+                else {
+                    collabRoomManager[room].forEach(client => {
+                        client.send(JSON.stringify({ type: "canvasImage", image: null }));
+                    });
                 }
             }
             else {

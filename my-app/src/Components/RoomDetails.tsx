@@ -1,4 +1,5 @@
 import React, { ChangeEvent, useState } from 'react'
+import "../Styles/RoomDetails.css"
 import { useNavigate } from 'react-router-dom';
 import { useSessionHook } from '../Hooks/useSessionHook';
 export default function RoomDetails() {
@@ -9,16 +10,17 @@ export default function RoomDetails() {
         setRoomName(e.target.value);
     }
   return (
-    <div>
-      <form>
+    <div id='form-modal'>
+      <form id='room-form'>
+
         <label htmlFor="roomname">Roomname</label>
-        <input type='text' id='roomname' name='roomname' onChange={(e:ChangeEvent<HTMLInputElement>)=>{
+        <input type='text' id='roomname' name='roomname' placeholder='Enter room code' onChange={(e:ChangeEvent<HTMLInputElement>)=>{
             handlechange(e);
         }}/>
         <button type='button' onClick={()=>{
             setSessionItem(roomname);
             navigator("/whiteboard");
-        }}>Lets Collab</button>
+        }}>Collab</button>
       </form>
     </div>
   )
