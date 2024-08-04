@@ -1,0 +1,42 @@
+#Whiteboard
+{
+    position: absolute;
+    background-color: #e7e7e7;
+
+    z-index: 0;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    
+}
+#board{
+    display: flex;
+    flex-direction: row;
+    z-index: 1;
+}
+#sidebar{
+    display: flex;
+    flex-direction: column;
+    width: 15vw;
+    justify-content: center;
+    align-items: flex-start;
+    margin: 2rem;
+}
+
+#sidebar button{
+    margin-top: .5rem;
+    
+    border: none;
+    background-color: transparent;
+    padding: 1rem;
+    border-radius: 10px;
+}
+
+#strokeColor{
+    align-self: flex-start;
+    margin-left: 5px;
+    margin-top: 1rem;
+}
+.highlight{
+    background-color: yellow !important;
+}
