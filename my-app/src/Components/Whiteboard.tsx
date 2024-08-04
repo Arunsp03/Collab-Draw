@@ -197,12 +197,8 @@ export default function Whiteboard() {
       ); 
       context.current?.beginPath();
     }
-    if(Eraser.current)
-    {
-      console.log("eraser time");
-      
-    }
-    else if (drawRectangle.current && lastPosition.current) {
+
+     if (drawRectangle.current && lastPosition.current) {
       rectangleBounds.current = {
         x: e.offsetX,
         y: e.offsetY,

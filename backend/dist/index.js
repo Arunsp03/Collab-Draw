@@ -31,12 +31,12 @@ wss.on('connection', function connection(ws) {
             else {
                 collabRoomManager[receiveddata.room] = [ws];
             }
-            console.log("total no of people in this room", collabRoomManager[receiveddata.room].length);
+            //    console.log("total no of people in this room",collabRoomManager[receiveddata.room].length)
         }
         else if (receiveddata.type === "Undo") {
             const room = receiveddata.room;
             let imageArr = historyManager[room];
-            console.log("imagearr length", imageArr.length);
+            //     console.log("imagearr length",imageArr.length);
             if (imageArr) {
                 if (imageArr.length > 1) {
                     historyManager[room].pop(); // Remove the current image
